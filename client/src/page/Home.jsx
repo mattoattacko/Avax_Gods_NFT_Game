@@ -5,8 +5,32 @@ import { PageHOC, CustomInput, CustomButton } from '../components'
 
 const Home = () => {
 
-  const { contract, walletAddress } = useGlobalContext();
+  const { contract, walletAddress, setShowAlert } = useGlobalContext();
   const [ playerName, setPlayerName ] = useState('');
+
+  //interact with the smart contract
+  const handleClick = async () => {
+    try {
+
+      const playerExists = await contract.isPlayer(walletAddress); // Check if player exists already. Function returns a boolean. 
+
+      if (!playerExists) {
+        await contract.registerPlayer(playerName, playerName); // Register player. The 'playerName' is coming from our CustomInput. The game token is the same as the second 'playerName'
+
+        setShowAlert({
+          status: true, //we want to show the alert ergo true
+          type: 'info', //show the info alert
+          message: `${playerName} is being summoned` //show the message
+        })
+      }
+    } catch (error) {
+      setShowAlert({
+        status: true, 
+        type: 'failure', 
+        message: "Something went wrong"
+      })
+    }
+  }
 
   return (
     <div className='flex flex-col'>
@@ -19,7 +43,7 @@ const Home = () => {
 
       <CustomButton 
         title="Register"
-        onClick={() => {}}
+        handleClick={handleClick}
         restStyles="mt-6" //styles for this specific button
       />
     </div>

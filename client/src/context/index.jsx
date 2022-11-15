@@ -22,11 +22,12 @@ export const GlobalContextProvider = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState('');
   const [contract, setContract] = useState('');
   const [provider, setProvider] = useState('');
+  const [showAlert, setShowAlert] = useState({ status: false, type: 'info', message: '' }); //starts as an object with status as false (meaning the message isnt showing)
 
   //* Set wallet address to the state
   const updateCurrentWalletAddress = async () => {
-    const accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts',
+    const accounts = await window?.ethereum?.request({
+      method: 'eth_requestAccounts'
     })
 
     //set first account as state
@@ -37,8 +38,8 @@ export const GlobalContextProvider = ({ children }) => {
     updateCurrentWalletAddress();
 
     //update the wallet on account change
-    window.ethereum.on('accountsChanged', updateCurrentWalletAddress);
-  }, [])
+    window?.ethereum?.on('accountsChanged', updateCurrentWalletAddress);
+  }, []);
 
   //* Set smart contract provider to state
   useEffect(() => {
@@ -46,21 +47,39 @@ export const GlobalContextProvider = ({ children }) => {
       const web3Modal = new Web3Modal();
       const connection = await web3Modal.connect();
       const newProvider = new ethers.providers.Web3Provider(connection);
-      const signer = newProvider.signer();
+      const signer = newProvider.getSigner();
       const newContract = new ethers.Contract(ADDRESS, ABI, signer);
 
       setProvider(newProvider); //we set the newProvider to the state so that we can use it later
       setContract(newContract);
-    }
+    };
 
     setSmartContractAndProvider();
-  }, [])
+  }, []);
+
+  //* Timer for alert
+  useEffect(() => {
+    //if the status is currently true (alert is showing) then we create a new timer. We show the alert and then close it after 5 seconds. The message being an empty string means we are canceling it.
+    //in React we need to make sure to clearTimeout() by passing the timer so that we dont have multiple timers running at the same time.
+    if (showAlert?.status) { 
+      const timer = setTimeout(() => {
+        setShowAlert({ status: false, type: 'info', message: '' })
+      }, [5000]);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
 
   return (
-    <GlobalContext.Provider value={{
-      contract, walletAddress //these are props
-    }}> 
-      {children} 
+    <GlobalContext.Provider 
+      value={{ //these next things are props
+        contract, 
+        walletAddress,
+        showAlert, 
+        setShowAlert,
+      }}
+    > 
+        {children} 
     </GlobalContext.Provider>
   )
 }

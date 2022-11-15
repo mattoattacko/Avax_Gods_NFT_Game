@@ -64,6 +64,8 @@ contract AVAXGods is ERC1155, Ownable, ERC1155Supply {
   GameToken[] public gameTokens; // Array of game tokens
   Battle[] public battles; // Array of battles
 
+  // the function 'isPlayer' accepts a parameter of type address (called addr). It is a public function (it can be called from outside). It returns a boolean value.
+  // if the playerInfo, when accessed by the specific address (addr) is = 0, that means the player under that address doesn't exist, so we return false. Else we return true.
   function isPlayer(address addr) public view returns (bool) {
     if(playerInfo[addr] == 0) {
       return false;
@@ -148,8 +150,15 @@ contract AVAXGods is ERC1155, Ownable, ERC1155Supply {
 
   /// @dev Registers a player
   /// @param _name player name; set by player
+  // registerPlayer accepts parameters. A property called '_name' of type string, and '_gameTokenName' of type string.
+  // 'require' is a check that can throw us out of the function call
   function registerPlayer(string memory _name, string memory _gameTokenName) external {
     require(!isPlayer(msg.sender), "Player already registered"); // Require that player is not already registered
+
+    //explaination: if not 'isPlayer', message the sender tyring to make this call and say 'player already registered'. If not, proceed with the function. 
+    //We give it an '_id' = to the current number of players. Then push a player to the 'players' array by creating an instance of a player with the players address ('msg.sender'), a _name, and the values of 10, 25, and false (false = not in battle). These numbers correspond to the mana, health, and inBattle properties of the player struct. 
+    //Once we push that player, we create the player info mapping and automatically create a random game token. Most importantly we emit a "new player event". 
+    // We will now be able to listen to the new player event on the FE, then we can fetch it and do something with the event. 
     
     uint256 _id = players.length;
     players.push(Player(msg.sender, _name, 10, 25, false)); // Adds player to players array
