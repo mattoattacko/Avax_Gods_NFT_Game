@@ -4,6 +4,8 @@ import Web3Modal from 'web3modal'; //allows us to connect to the wallet
 import { useNavigate } from 'react-router-dom';
 import { ABI, ADDRESS } from '../contract';
 
+import { createEventListeners } from './createEventListeners';
+
 const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
@@ -24,6 +26,8 @@ export const GlobalContextProvider = ({ children }) => {
   const [provider, setProvider] = useState('');
   const [showAlert, setShowAlert] = useState({ status: false, type: 'info', message: '' }); //starts as an object with status as false (meaning the message isnt showing)
 
+  const navigate = useNavigate();
+
   //* Set wallet address to the state
   const updateCurrentWalletAddress = async () => {
     const accounts = await window?.ethereum?.request({
@@ -31,7 +35,7 @@ export const GlobalContextProvider = ({ children }) => {
     })
 
     //set first account as state
-    if(accounts) setWalletAddress(accounts[0]);
+    if (accounts) setWalletAddress(accounts[0]);
   }
 
   useEffect(() => {
@@ -57,11 +61,25 @@ export const GlobalContextProvider = ({ children }) => {
     setSmartContractAndProvider();
   }, []);
 
-  //* Timer for alert
   useEffect(() => {
-    //if the status is currently true (alert is showing) then we create a new timer. We show the alert and then close it after 5 seconds. The message being an empty string means we are canceling it.
-    //in React we need to make sure to clearTimeout() by passing the timer so that we dont have multiple timers running at the same time.
-    if (showAlert?.status) { 
+    //check if contract exists. If it does, createEventListeners function.
+    if (contract) {
+      createEventListeners({
+        navigate,
+        contract,
+        provider,
+        walletAddress,
+        setShowAlert,
+      });
+    }
+  }, [contract])
+
+  //* Timer for alert
+  //if the status is currently true (alert is showing) then we create a new timer. We show the alert and then close it after 5 seconds. The message being an empty string means we are canceling it.
+  //in React we need to make sure to clearTimeout() by passing the timer so that we dont have multiple timers running at the same time.
+  useEffect(() => {
+
+    if (showAlert?.status) {
       const timer = setTimeout(() => {
         setShowAlert({ status: false, type: 'info', message: '' })
       }, [5000]);
@@ -71,15 +89,16 @@ export const GlobalContextProvider = ({ children }) => {
   }, [showAlert]);
 
   return (
-    <GlobalContext.Provider 
+    <GlobalContext.Provider
       value={{ //these next things are props
-        contract, 
+        contract,
         walletAddress,
-        showAlert, 
+        showAlert,
         setShowAlert,
+        updateCurrentWalletAddress,
       }}
-    > 
-        {children} 
+    >
+      {children}
     </GlobalContext.Provider>
   )
 }
