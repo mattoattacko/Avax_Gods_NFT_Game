@@ -24,7 +24,8 @@ export const GlobalContextProvider = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState('');
   const [contract, setContract] = useState('');
   const [provider, setProvider] = useState('');
-  const [showAlert, setShowAlert] = useState({ status: false, type: 'info', message: '' }); //starts as an object with status as false (meaning the message isnt showing)
+  const [showAlert, setShowAlert] = useState({ status: false, type: "info", message: '' }); //starts as an object with status as false (meaning the message isnt showing)
+  const [battleName, setBattleName] = useState('');
 
   const navigate = useNavigate();
 
@@ -70,6 +71,8 @@ export const GlobalContextProvider = ({ children }) => {
         provider,
         walletAddress,
         setShowAlert,
+        setBattleName,
+        battleName,
       });
     }
   }, [contract])
@@ -81,7 +84,7 @@ export const GlobalContextProvider = ({ children }) => {
 
     if (showAlert?.status) {
       const timer = setTimeout(() => {
-        setShowAlert({ status: false, type: 'info', message: '' })
+        setShowAlert({ status: false, type: "info", message: '' })
       }, [5000]);
 
       return () => clearTimeout(timer);

@@ -223,25 +223,26 @@ contract AVAXGods is ERC1155, Ownable, ERC1155Supply {
   }
 
   /// @dev Creates a new battle
-  /// @param _name battle name; set by player
+  /// @param _name battle name; set by player. So it accepts the battle name as its only parameter
   function createBattle(string memory _name) external returns (Battle memory) {
     require(isPlayer(msg.sender), "Please Register Player First"); // Require that the player is registered
     require(!isBattle(_name), "Battle already exists!"); // Require battle with same name should not exist
 
+    /// Creates a special battle hash (keccak is the hash). We are passing in the battle name to hash.
     bytes32 battleHash = keccak256(abi.encode(_name));
     
     Battle memory _battle = Battle(
-      BattleStatus.PENDING, // Battle pending
+      BattleStatus.PENDING, // sets Battle status as pending (player hasn't yet joined battle)
       battleHash, // Battle hash
       _name, // Battle name
-      [msg.sender, address(0)], // player addresses; player 2 empty until they joins battle
-      [0, 0], // moves for each player
+      [msg.sender, address(0)], // player addresses; player 2 empty until they joins battle. 'msg.sender' is the person who created the battle.
+      [0, 0], // moves for each player. Boolean variable of has the player made a move or not? 
       address(0) // winner address; empty until battle ends
     );
 
-    uint256 _id = battles.length;
-    battleInfo[_name] = _id;
-    battles.push(_battle);
+    uint256 _id = battles.length; //get the id of the battle
+    battleInfo[_name] = _id; //push it to the battles array
+    battles.push(_battle); //push it to the battles array
     
     return _battle;
   }

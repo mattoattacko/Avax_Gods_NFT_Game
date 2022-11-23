@@ -3,6 +3,7 @@ import CustomInput from "./CustomInput";
 import CustomButton from "./CustomButton";
 import OnboardModal from "./OnboardModal";
 import Alert from "./Alert";
+import GameLoad from "./GameLoad";
 
 export {
   PageHOC,
@@ -10,4 +11,5 @@ export {
   CustomButton,
   OnboardModal,
   Alert,
+  GameLoad,
 }
