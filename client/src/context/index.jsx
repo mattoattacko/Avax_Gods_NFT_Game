@@ -69,7 +69,7 @@ export const GlobalContextProvider = ({ children }) => {
         navigate,
         contract,
         provider,
-        walletAddress,
+        walletAddress,        
         setShowAlert,
         setBattleName,
         battleName,
@@ -96,9 +96,11 @@ export const GlobalContextProvider = ({ children }) => {
       value={{ //these next things are props
         contract,
         walletAddress,
+        updateCurrentWalletAddress,
         showAlert,
         setShowAlert,
-        updateCurrentWalletAddress,
+        battleName,
+        setBattleName,
       }}
     >
       {children}

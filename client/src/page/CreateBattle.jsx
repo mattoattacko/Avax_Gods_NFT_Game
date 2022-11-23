@@ -7,7 +7,7 @@ import styles from '../styles';
 const CreateBattle = () => {
   
   const { battleName, setBattleName, contract } = useGlobalContext();
-  const [waitBattle, setWaitBattle] = useState(false); //used for wait screen
+  const [waitBattle, setWaitBattle] = useState(false); //used for wait screen. Starts as false because we haven't created the battle yet.
 
 
   const navigate = useNavigate();

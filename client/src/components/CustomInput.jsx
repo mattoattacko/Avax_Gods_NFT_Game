@@ -9,13 +9,13 @@ const regex = /^[A-Za-z0-9]+$/;
 const CustomInput = ({ label, placeholder, value, handleValueChange }) => {
   return (
     <>
-      <label htmlFor='name' className={styles.label}>
+      <label htmlFor="name" className={styles.label}>
         {label}
       </label>
 
       {/* regex.test(e.target.value) means did it pass our test of being a character or number */}
       <input 
-        type='text'
+        type="text"
         placeholder={placeholder}
         value={value}
         onChange={(e) => {
