@@ -91,6 +91,25 @@ export const GlobalContextProvider = ({ children }) => {
     }
   }, [showAlert]);
 
+
+  //* Set the game data to the state
+  // this will be useful later on once we want to map over the active games, or check if the current player is in a game.
+  //executed when contract changes
+  useEffect(() => {
+    const fetchGameData = async () => {
+      //first get all available battles
+      const fetchedBattles = await contract?.getAllBattles();
+
+      //filter battles to only show battles no one has joined yet
+      const pendingBattles = fe
+
+      console.log(fetchedBattles);
+    }
+
+    //check if contract exists. If so, fetch game data function
+    if(contract) fetchGameData();
+  }, [contract])
+
   return (
     <GlobalContext.Provider
       value={{ //these next things are props

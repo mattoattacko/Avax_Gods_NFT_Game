@@ -113,6 +113,7 @@ contract AVAXGods is ERC1155, Ownable, ERC1155Supply {
     return battles[battleInfo[_name]];
   }
 
+  //getter function that returns the array of all active battles
   function getAllBattles() public view returns (Battle[] memory) {
     return battles;
   }
