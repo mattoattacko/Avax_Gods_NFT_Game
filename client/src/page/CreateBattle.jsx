@@ -6,11 +6,16 @@ import styles from '../styles';
 
 const CreateBattle = () => {
   
-  const { battleName, setBattleName, contract } = useGlobalContext();
+  const { battleName, setBattleName, contract, gameData } = useGlobalContext();
   const [waitBattle, setWaitBattle] = useState(false); //used for wait screen. Starts as false because we haven't created the battle yet.
-
-
   const navigate = useNavigate();
+
+  //checks if the current player has created a battle or not
+  useEffect(() => {
+    if(gameData?.activeBattle?.battleStatus === 0) {
+      setWaitBattle(true);
+    }
+  }, [gameData])
 
   const handleClick = async () => {
     //make sure user filled in info

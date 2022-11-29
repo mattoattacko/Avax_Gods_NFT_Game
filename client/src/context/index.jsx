@@ -26,6 +26,11 @@ export const GlobalContextProvider = ({ children }) => {
   const [provider, setProvider] = useState('');
   const [showAlert, setShowAlert] = useState({ status: false, type: "info", message: '' }); //starts as an object with status as false (meaning the message isnt showing)
   const [battleName, setBattleName] = useState('');
+  const [gameData, setGameData] = useState({
+    players: [],
+    pendingBattle: [],
+    activeBattle: null
+  });
 
   const navigate = useNavigate();
 
@@ -100,10 +105,24 @@ export const GlobalContextProvider = ({ children }) => {
       //first get all available battles
       const fetchedBattles = await contract?.getAllBattles();
 
-      //filter battles to only show battles no one has joined yet
-      const pendingBattles = fe
+      //filter battles to only show battles no one has joined yet. battleStatus = 0 means no one has joined yet and the battle is pending.
+      const pendingBattles = fetchedBattles.filter((battle) => battle.battleStatus === 0);
+      let activeBattle = null;
 
-      console.log(fetchedBattles);
+      //finds battle that our current player has created (aka an active battle).
+      //means that our player has the same address as the address of the wallet in the browser. Which means we can do things. 
+      // 'startsWith(0x00)' means we dont have a winner and the battle is still active.
+      //in that case we can create a new variable (let activeBattle). 
+      fetchedBattles.forEach((battle) => {
+        if(battle.players.find((player) => player.toLowerCase() === walletAddress.toLowerCase())) {
+          if(battle.winner.startsWith('0x00')) {
+            activeBattle = battle;
+          }
+        }
+      })
+
+      // console.log(fetchedBattles);
+      setGameData({ pendingBattles: pendingBattles.slice(1), activeBattle })
     }
 
     //check if contract exists. If so, fetch game data function
@@ -120,6 +139,8 @@ export const GlobalContextProvider = ({ children }) => {
         setShowAlert,
         battleName,
         setBattleName,
+        gameData,
+        setGameData,
       }}
     >
       {children}
