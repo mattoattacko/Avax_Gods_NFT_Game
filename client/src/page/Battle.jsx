@@ -10,7 +10,7 @@ import styles from '../styles';
 
 
 const Battle = () => {
-  const { contract, gameData, walletAddress, setBattleName, setShowAlert } = useGlobalContext();
+  const { contract, gameData, walletAddress, setBattleName, setShowAlert, battleGround } = useGlobalContext();
   const [player1, setPlayer1] = useState({});
   const [player2, setPlayer2] = useState({});
   //navigate to /battle/:battleName
@@ -21,8 +21,8 @@ const Battle = () => {
 
   return (
     //battleGround images in the tailwind config file are based on different battle ground names.
-    <div className={`${styles.flexBetween} ${styles.gameContainer} astral`}  >
-      <h1 className="text-xl text-white">
+    <div className={`${styles.flexBetween} ${styles.gameContainer} ${battleGround}`}>
+      <h1 className="text-xl">
         {battleName}
       </h1>
     </div>

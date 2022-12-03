@@ -31,7 +31,7 @@ const JoinBattle = () => {
       <div className={styles.joinContainer}>
         {/* check if pending battles exist. If yes, display them */}
         {/* filter out the battles that dont match any that the current player has created, then map through them */}
-        {gameData.pendingBattles.length 
+        {gameData.pendingBattles?.length 
           ? gameData.pendingBattles.filter((battle) => !battle.players.includes(walletAddress)).map((battle, index) => (
             <div key={battle.name + index} className={styles.flexBetween}>
               <p className={styles.joinBattleTitle}>
